@@ -16,8 +16,16 @@ const initialState: AuthSate = {
 	nombre: "",
 };
 
+// Type para el payload de la accion Login
+type LoginActionPayload = {
+	username: string;
+	nombre: string;
+};
+
 // Creamos la accion que preferiblemte la manejamos como type (porque son objetos planos y no lo vamos a expandir en el futuro)
-type AuthAction = {type: "logout"};
+type AuthAction =
+	| {type: "logout"}
+	| {type: "login"; payload: LoginActionPayload};
 
 // Creamos la función (reducer) que recibe el estado y la acción(modifica el estado)
 const authReducer = (state: AuthSate, action: AuthAction): AuthSate => {
@@ -30,13 +38,25 @@ const authReducer = (state: AuthSate, action: AuthAction): AuthSate => {
 				nombre: "",
 			};
 
+		case "login":
+			const {username, nombre} = action.payload;
+			return {
+				validando: false,
+				token: "ABC123",
+				nombre,
+				username,
+			};
+
 		default:
 			return state;
 	}
 };
 
 const Login = () => {
-	const [{validando}, dispatch] = useReducer(authReducer, initialState);
+	const [{validando, token, nombre}, dispatch] = useReducer(
+		authReducer,
+		initialState
+	);
 
 	useEffect(() => {
 		setTimeout(() => {
@@ -44,10 +64,23 @@ const Login = () => {
 		}, 1500);
 	}, []);
 
+	// Funcion para disparar la accion de login
+	const login = () => {
+		dispatch({
+			type: "login",
+			payload: {username: "Humber09", nombre: "Humberto"},
+		});
+	};
+
+	const logout = () => {
+		dispatch({type: "logout"});
+	};
+
+	// Mensaje de validando en la UI
 	if (validando) {
 		return (
-      <>
-        <h3>Login</h3>
+			<>
+				<h3>Login</h3>
 				<div className="alert alert-info">Validando...</div>
 			</>
 		);
@@ -57,12 +90,21 @@ const Login = () => {
 		<>
 			<h3>Login</h3>
 
-			<div className="alert alert-danger">No autenticado</div>
+			{token ? (
+				<div className="alert alert-success">Autenticado como: {nombre}</div>
+			) : (
+				<div className="alert alert-danger">No Autenticado</div>
+			)}
 
-			<div className="alert alert-success">Autenticado</div>
-
-			<button className="btn btn-primary">Login</button>
-			<button className="btn btn-danger">Logout</button>
+			{token ? (
+				<button className="btn btn-danger mx-3" onClick={logout}>
+					Logout
+				</button>
+			) : (
+				<button className="btn btn-primary" onClick={login}>
+					Login
+				</button>
+			)}
 		</>
 	);
 };
