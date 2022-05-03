@@ -36,7 +36,7 @@ const Usuarios = () => {
 						<th>Email</th>
 					</tr>
 				</thead>
-				<tbody>{usuarios.map((usuario) => renderItem(usuario))}</tbody>
+				<tbody>{usuarios.map(renderItem)}</tbody>
 			</table>
 		</>
 	);
