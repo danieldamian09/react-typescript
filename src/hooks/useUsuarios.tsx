@@ -3,8 +3,7 @@ import {reqResApi} from "../api/reqRes";
 import {ReqRespListado, Usuario} from "../interfaces/reqRes";
 
 const useUsuarios = () => {
-
-  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+	const [usuarios, setUsuarios] = useState<Usuario[]>([]);
 
 	// Referencia para la paginacion
 	const paginaRef = useRef(1);
@@ -21,19 +20,27 @@ const useUsuarios = () => {
 				page: paginaRef.current,
 			},
 		});
-
-
 		if (resp.data.data.length > 0) {
 			setUsuarios(resp.data.data);
-			paginaRef.current++;
-			console.log(paginaRef.current);
 		} else {
+      paginaRef.current--;
 			alert("No hay mas usuarios");
 		}
 	};
 
-  return {usuarios, cargarUsuarios};
+	const paginaSiguiente = () => {
+		paginaRef.current++;
+		cargarUsuarios();
+	};
 
-}
+	const paginaAnterior = () => {
+		if (paginaRef.current > 1) {
+			paginaRef.current--;
+			cargarUsuarios();
+		}
+	};
 
-export default useUsuarios
+	return {usuarios, paginaSiguiente, paginaAnterior};
+};
+
+export default useUsuarios;
