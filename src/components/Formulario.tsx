@@ -1,20 +1,12 @@
-import { useState } from 'react';
+import useForm from "../hooks/useForm";
 
 
 const Formulario = () => {
 
-  const [formulario, setFormulario] = useState({
-    email: 'test@mail.com',
-    password: '123456',
-  })
-
-  // Funcionm para leer los datos del formulario como lo vamos a hacer en React Native
-  const handleChange = (value:string, campo:string) => {
-    setFormulario({
-      ...formulario,
-      [campo]: value
-    })
-  }
+  const {formulario, email, password ,handleChange} = useForm({
+		email: "test@mail.com",
+		password: "123456",
+	});  
 
   return (
     <>
@@ -25,7 +17,7 @@ const Formulario = () => {
         placeholder="Email"
         name="email"
         id="email"
-        value={formulario.email}
+        value={email}
         onChange={(e) => handleChange(e.target.value, 'email')}
       />
       
@@ -35,7 +27,7 @@ const Formulario = () => {
         placeholder="Password"
         name="password"
         id="password"
-        value={formulario.password}
+        value={password}
         onChange={({target}) => handleChange(target.value, 'password')}
       />
 
